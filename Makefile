@@ -1,4 +1,4 @@
-BINARY=cypto-data-collection
+BINARY=crypto-data-collection
 
 VERSION=0.0.1
 
@@ -21,9 +21,6 @@ build:
 
 fmt:
 	gofmt -w ./$*
-
-tests:
-	go test github.com/dailymotion-leo/currency-fetcher/
 
 install:
 	go install ${LDFLAGS}
