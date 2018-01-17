@@ -25,25 +25,26 @@ func (p *Loader) HandleTick() {
 	toCurrencies := p.Conf.Currencies.ToCurrencyList
 	url := constructUrl(fromCurrencies, toCurrencies)
 	priceMulti := buildPriceObject(url)
+	if priceMulti != nil {
+		db, err := p.GetDbConn()
+		if err != nil {
+			log.Fatal(err)
+		}
 
-	db, err := p.GetDbConn()
-	if err != nil {
-		log.Fatal(err)
-	}
+		defer db.Close()
 
-	defer db.Close()
+		for _,fromCurrency := range strings.Split(fromCurrencies, ",") {
+			for _,toCurrency := range strings.Split(toCurrencies, ","){
+				insertStatement := buildInsertStatement()
+				key := "RAW." + fromCurrency + "." + toCurrency + "."
+				record := buildRecord(priceMulti, key)
+				_, err := db.Exec(insertStatement,record.Type,record.Market,record.Fromsymbol,record.Tosymbol,record.Flags,record.Price,record.Lastupdate,record.Lastvolume,record.Lastvolumeto,record.Lasttradeid,record.Volumeday,record.Volumedayto,record.Volume24hour,record.Volume24hourto,record.Openday,record.Highday,record.Lowday,record.Open24hour,record.High24hour,record.Low24hour,record.Lastmarket,record.Change24hour,record.Changepct24hour,record.Changeday,record.Changepctday,record.Supply,record.Mktcap,record.Totalvolume24h,record.Totalvolume24hto)
+				if err!=nil {
+					panic(err)
+				}
 
-	for _,fromCurrency := range strings.Split(fromCurrencies, ",") {
-		for _,toCurrency := range strings.Split(toCurrencies, ","){
-			insertStatement := buildInsertStatement()
-			key := "RAW." + fromCurrency + "." + toCurrency + "."
-			record := buildRecord(priceMulti, key)
-			_, err := db.Exec(insertStatement,record.Type,record.Market,record.Fromsymbol,record.Tosymbol,record.Flags,record.Price,record.Lastupdate,record.Lastvolume,record.Lastvolumeto,record.Lasttradeid,record.Volumeday,record.Volumedayto,record.Volume24hour,record.Volume24hourto,record.Openday,record.Highday,record.Lowday,record.Open24hour,record.High24hour,record.Low24hour,record.Lastmarket,record.Change24hour,record.Changepct24hour,record.Changeday,record.Changepctday,record.Supply,record.Mktcap,record.Totalvolume24h,record.Totalvolume24hto)
-			if err!=nil {
-				panic(err)
+				log.Println("The prices for ", record.Fromsymbol," were last updated at :", time.Unix(record.Lastupdate,0))
 			}
-
-			log.Println("The prices for ", record.Fromsymbol," were last updated at :", time.Unix(record.Lastupdate,0))
 		}
 	}
 
@@ -143,7 +144,9 @@ func buildPriceObject(url string) map[string]interface{} {
 
 	res, getErr := httpClient.Do(req)
 	if getErr != nil {
-		panic(getErr)
+		log.Println(getErr)
+		log.Println("Skipping the records for time : ", time.Now())
+		return nil
 	}
 
 	body, readErr := ioutil.ReadAll(res.Body)
