@@ -22,6 +22,9 @@ build:
 fmt:
 	gofmt -w ./$*
 
+tests:
+	go test github.com/Crypto/cryptoapp-data-collection/
+
 install:
 	go install ${LDFLAGS}
 

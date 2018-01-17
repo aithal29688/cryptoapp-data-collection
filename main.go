@@ -7,8 +7,8 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
-	"github.com/Crypto/CryptoDataCollection/misc"
-	"github.com/Crypto/CryptoDataCollection/server"
+	"github.com/Crypto/cryptoapp-data-collection/misc"
+	"github.com/Crypto/cryptoapp-data-collection/server"
 )
 
 var (
@@ -37,7 +37,9 @@ func main() {
 		Conf: conf,
 	}
 
-	ticker := time.NewTicker(time.Minute)
+	//p.HandleTick()
+	interval := 3 * time.Minute
+	ticker := time.NewTicker(interval)
 	for {
 		select {
 			case <-ticker.C:

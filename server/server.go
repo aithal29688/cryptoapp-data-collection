@@ -5,8 +5,8 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"time"
-	"github.com/Crypto/CryptoDataCollection/misc"
 	log "github.com/sirupsen/logrus"
+	"github.com/Crypto/cryptoapp-data-collection/misc"
 )
 
 type ServerInfo struct {

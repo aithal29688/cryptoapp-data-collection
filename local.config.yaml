@@ -1,5 +1,6 @@
 currencies:
-  currencylist: "BTC,ETH,LTC,BCH"
+  fromcurrencylist: "BTC,ETH,LTC,BCH"
+  tocurrencylist: "USD"
 http:
   address: ":8080" # The HTTP address to bind to
   readtimeout: 5 # in seconds
@@ -12,6 +13,12 @@ log:
   maxagedays: 10
   writestdout: true
   json: false
+dbconn:
+  user: "postgres"
+  password: "sSyP2018"
+  port: 5432
+  host: "cryptobookdbinstance.c4fshiqizfeu.us-east-2.rds.amazonaws.com"
+  dbname: "cryptopricesmulti"
 environment: "local"
 refreshinterval: 60
 statsdhost: ""
